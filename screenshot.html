@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>netlink-watch</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #1e1e2e; font-family: 'Fira Code', monospace; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; padding: 40px 20px; }
+  .terminal {
+    background: #181825;
+    border-radius: 12px;
+    padding: 24px 28px;
+    color: #cdd6f4;
+    font-size: 13px;
+    line-height: 1.5;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    max-width: 1080px;
+    width: 100%;
+  }
+  .cyan { color: #89dceb; }
+  .green { color: #a6e3a1; }
+  .yellow { color: #f9e2af; }
+  .red { color: #f38ba8; }
+  .dim { color: #6c7086; }
+  .magenta { color: #cba6f7; }
+  .blue { color: #89b4fa; }
+  .bold { font-weight: 600; }
+  .section-title { color: #cdd6f4; font-weight: 600; margin-top: 12px; margin-bottom: 6px; }
+  .agg-row { display: flex; gap: 20px; margin-bottom: 6px; flex-wrap: wrap; }
+  .agg-label { color: #6c7086; font-size: 10.5px; }
+  .agg-value { color: #cdd6f4; font-size: 14px; font-weight: 600; }
+  pre { font-family: 'Fira Code', monospace; font-size: 12.6px; line-height: 1.52; color: #cdd6f4; margin-top: 8px; }
+  .k { color: #6c7086; }
+  .cmd { background: #11111b; border-radius: 8px; padding: 12px 16px; margin-top: 12px; font-size: 12px; }
+  .cmd .line { color: #a6e3a1; }
+  .notes { margin-top: 12px; color: #6c7086; font-size: 11px; line-height: 1.5; }
+  .prompt { margin-top: 16px; color: #a6e3a1; font-size: 12px; }
+  .tag { font-size: 10px; padding: 1px 6px; border-radius: 4px; background: #313244; margin-left: 4px; }
+  .tag-hot { color: #f38ba8; }
+  .tag-ok { color: #a6e3a1; }
+</style>
+</head>
+<body>
+<div class="terminal">
+  <div class="section-title">-- Linux Netlink Socket Monitor  /proc/net/netlink --</div>
+  <div class="agg-row">
+    <div>
+      <div class="agg-label">sockets</div>
+      <div class="agg-value cyan">33</div>
+    </div>
+    <div>
+      <div class="agg-label">families</div>
+      <div class="agg-value magenta">16</div>
+    </div>
+    <div>
+      <div class="agg-label">GENERIC</div>
+      <div class="agg-value green">11</div>
+    </div>
+    <div>
+      <div class="agg-label">multicast</div>
+      <div class="agg-value yellow">3</div>
+    </div>
+    <div>
+      <div class="agg-label">kernel</div>
+      <div class="agg-value dim">2</div>
+    </div>
+    <div>
+      <div class="agg-label">drops</div>
+      <div class="agg-value red">24</div>
+    </div>
+    <div>
+      <div class="agg-label">procs</div>
+      <div class="agg-value blue">9</div>
+    </div>
+  </div>
+  <div class="agg-row">
+    <div><span class="agg-label">source: </span><span class="agg-value dim">demo (synthetic udev + audit + route + apps host)</span></div>
+  </div>
+
+  <div class="section-title">-- netlink sockets table --</div>
+<pre><span class="k">  sk               family(proto)  pid         comm      grps  rmem   wmem  dump lk  drops   inode
+  -------------------------------------------------------------------------------------------------
+  0000000000000000  <span class="cyan bold">ROUTE</span>          ( 0) 3133                  0     0     0   0  2      0  9310177
+  0000000000000000  <span class="cyan bold">ROUTE</span>          ( 0) 0         -kernel-    0     0     0   0  2      0  9310178
+  0000000000000000  <span class="blue">INET_DIAG</span>      ( 4) 3133                  0     0     0   0  2      0  9310181
+  0000000000000000  <span class="cyan dim">XFRM</span>           ( 6) 3133                  0     0     0   0  2      0  9310184
+  0000000000000000  <span class="yellow">AUDIT</span>          ( 9) 5214                  0     0     0   0  2      0  9310190
+  0000000000000000  <span class="yellow">AUDIT</span>          ( 9) 5214                  0     0     0   0  2      0  9310193
+  0000000000000000  <span class="cyan dim">FIB_LOOKUP</span>     (10) 3133                  0     0     0   0  2      0  9310201
+  0000000000000000  <span class="red">NETFILTER</span>      (12) 3133                  0     0     0   0  2      0  9310205
+  0000000000000000  <span class="magenta">KOBJECT_UEVENT</span> (15) 2115         </span>        6     0  1024   0  2      0  9822214
+  0000000000000000  <span class="magenta">KOBJECT_UEVENT</span> (15) 2115                  7     0   768   0  2      0  9822217
+  0000000000000000  <span class="magenta">KOBJECT_UEVENT</span> (15) 0         -kernel-    0     0     0   0  2      0    25019
+  0000000000000000  <span class="green">GENERIC</span>        (16) 3315                  0     0     0   0  2      0  1205517
+  0000000000000000  <span class="green">GENERIC</span>        (16) 3315                  0     0     0   0  2      0  1205518
+  0000000000000000  <span class="green">GENERIC</span>        (16) 1082         hermes     <span class="blue">2048</span>  2048     1   2      0  1133888
+  0000000000000000  <span class="green">GENERIC</span>        (16) 1082                  0     0     0   0  2      0  1133891
+  0000000000000000  <span class="green">GENERIC</span>        (16) 2301669796  ?          0     0     0   0  2      0  2323626
+  0000000000000000  <span class="cyan dim">CRYPTO</span>         (20) 3133                  0     0     0   0  2      0  9310210
+  0000000000000000  <span class="cyan dim">DEVLINK</span>        (22) 3133                  0     0     0   0  2      0  9310213
+  0000000000000000  <span class="cyan">DATAPATH</span>       (23) 3133                  0     0   128   0  2      <span class="red">4</span>  9310216
+  0000000000000000  <span class="cyan">DATAPATH</span>       (23) 3133                  0     0     0   0  2      <span class="red">17</span> 9310217
+  0000000000000000  <span class="cyan dim">RDMA</span>           (19) 4422                  0  4096     0   0  2      0  1999120
+  0000000000000000  <span class="cyan dim">RDMA</span>           (19) 4422                  0     0     0   0  2      <span class="red">3</span> 1999123</pre>
+
+  <div class="section-title">-- families --</div>
+<pre><span class="k">  ROUTE(2) USERSOCK(1) FIREWALL(1) INET_DIAG(1) NFLOG(1) XFRM(1) AUDIT(2) FIB_LOOKUP(1)
+  NETFILTER(1) <span class="magenta">KOBJECT_UEVENT(3)</span> <span class="green">GENERIC(11)</span> RDMA(2) CRYPTO(1) SMC(1) DEVLINK(1) <span class="cyan">DATAPATH(3)</span>
+  multicast listeners: 3  ·  kernel/unbound: 2  ·  total drops: <span class="red bold">24</span>  ·  shown: 33/33</span></pre>
+
+  <div class="cmd">
+    <div class="line">$ ./netlink-watch --drops</div>
+    <div class="line">$ ./netlink-watch --proto 16 --top 4</div>
+    <div class="line">$ ./netlink-watch --json | python3 -m json.tool</div>
+    <div class="out dim">zero deps · C++23 · g++ -std=c++23 -O2 -Wall -Wextra · selftest 56 checks · --no-color</div>
+  </div>
+  <div class="notes">Linux netlink socket monitor — /proc/net/netlink · 23 families (0 ROUTE … 23 DATAPATH) · multicast group popcount · drops/EBOOKS in red · port id &gt; 2^31-1 supported · pid → comm</div>
+  <div class="prompt">netlink-watch@hermes:~$ <span class="dim">▊</span></div>
+</div>
+</body>
+</html>
